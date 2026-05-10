@@ -6,6 +6,10 @@ import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 const STORAGE_KEY = "courseThankyouData";
+const communityLink =
+  process.env.NEXT_PUBLIC_COURSE_WHATSAPP_COMMUNITY_URL ||
+  process.env.NEXT_PUBLIC_COURSE_WHATSAPP_COMMUNITY_URL ||
+  "https://chat.whatsapp.com/JeoQrKP4vBOAiIEOEl5cjT";
 
 export default function CourseThankYouPage() {
   const router = useRouter();
@@ -250,10 +254,7 @@ export default function CourseThankYouPage() {
 
         <div className="mt-8">
           <a
-            href={
-              data.whatsappCommunityUrl ||
-              "https://chat.whatsapp.com/BqGroJM47xW8a9kOL3GuUT"
-            }
+            href={communityLink}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-4 mb-4 bg-gradient-to-r from-[#75c13f] to-[#5da432] text-gray-900 font-black uppercase tracking-tighter text-center block rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(117,193,63,0.3)] hover:shadow-[0_0_30px_rgba(117,193,63,0.5)] active:scale-95 hover:-translate-y-0.5"

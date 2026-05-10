@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const communityLink =
+  process.env.NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL ||
+  process.env.NEXT_PUBLIC_COMMUNITY_LINK ||
+  "https://chat.whatsapp.com/LuxhsZUv1ob44a4Ze5GFn3";
+
 export default function ThankYouPage() {
   const router = useRouter();
   const [data, setData] = useState(null);
@@ -183,7 +188,7 @@ export default function ThankYouPage() {
         {/* Action Button */}
         <div className="mt-8">
           <a
-            href="https://chat.whatsapp.com/HjW5OInq33h3cOzDZv7Dln"
+            href={communityLink}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-4 mb-4 bg-gradient-to-r from-[#75c13f] to-[#5da432] hover:from-[#75c13f] hover:to-[#5da432] text-gray-900 font-black uppercase tracking-tighter text-center block rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(117,193,63,0.3)] hover:shadow-[0_0_30px_rgba(117,193,63,0.5)] active:scale-95 hover:-translate-y-0.5"
