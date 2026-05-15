@@ -159,7 +159,7 @@ const Page = () => {
           <PolicyBlock title="11) Contact Us">
             <div className="rounded-xl border bg-gray-50 p-4">
               <p className="text-sm sm:text-base">
-                <span className="font-semibold">Phone:</span> +91 9216675329
+                <span className="font-semibold">Phone:</span> +91 8756243093
               </p>
               <p className="text-sm sm:text-base break-all mt-1">
                 <span className="font-semibold">Email:</span>{" "}
