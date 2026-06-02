@@ -1,6 +1,37 @@
 // src/app/lib/googleSheet.js
 import { google } from "googleapis";
 import { formatISTDateTime } from "./dateTime";
+import { cleanPhone10 } from "./phone";
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
+
+function parseISTSheetTimestamp(value) {
+  const text = String(value || "").trim();
+  const match = text.match(
+    /^(\d{1,2})\/(\d{1,2})\/(\d{4}),?\s+(\d{1,2}):(\d{2}):(\d{2})\s*(am|pm)$/i
+  );
+
+  if (!match) return null;
+
+  const [, day, month, year, rawHour, minute, second, meridiem] = match;
+  let hour = Number(rawHour) % 12;
+  if (meridiem.toLowerCase() === "pm") hour += 12;
+
+  const timestamp =
+    Date.UTC(Number(year), Number(month) - 1, Number(day), hour, Number(minute), Number(second)) -
+    IST_OFFSET_MS;
+
+  return Number.isFinite(timestamp) ? timestamp : null;
+}
+
+function normalizeStoredPhone(value) {
+  try {
+    return cleanPhone10(value);
+  } catch {
+    return "";
+  }
+}
 
 function getAuthClient() {
   const auth = new google.auth.GoogleAuth({
@@ -85,7 +116,7 @@ export async function findRowByLeadId(leadId) {
 }
 
 // ✅ Mark a single cell (e.g. J12 = "yes")
-// Find existing lead row by phone/email (prevents duplicate submissions)
+// Find a matching lead submitted during the last week.
 export async function findExistingLeadRow({ phone10, email }) {
   const p = String(phone10 || "").trim();
   const e = String(email || "")
@@ -97,21 +128,23 @@ export async function findExistingLeadRow({ phone10, email }) {
   const sheets = await getSheets();
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    // C=email, D=phone. Start at row 2 to skip headers.
-    range: "Sheet1!C2:D",
+    // A=timestamp, C=email, D=phone. Start at row 2 to skip headers.
+    range: "Sheet1!A2:D",
   });
 
   const rows = res.data.values || [];
   for (let i = 0; i < rows.length; i++) {
-    const rowEmail = String(rows[i]?.[0] || "")
+    const submittedAt = parseISTSheetTimestamp(rows[i]?.[0]);
+    const rowEmail = String(rows[i]?.[2] || "")
       .trim()
       .toLowerCase();
-    const rowPhone = String(rows[i]?.[1] || "").trim();
+    const rowPhone = normalizeStoredPhone(rows[i]?.[3]);
+    const matchedBy = p && rowPhone === p ? "phone" : e && rowEmail === e ? "email" : null;
 
-    if ((p && rowPhone === p) || (e && rowEmail === e)) {
+    if (matchedBy && (submittedAt === null || Date.now() - submittedAt < WEEK_MS)) {
       return {
         rowNumber: i + 2, // because we started at row 2
-        matchedBy: p && rowPhone === p ? "phone" : "email",
+        matchedBy,
       };
     }
   }

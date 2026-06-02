@@ -182,14 +182,14 @@ export async function POST(req) {
       );
     }
 
-    // Prevent duplicate submissions (same phone/email already exists in Sheet)
+    // Allow one free webinar registration per phone/email every 7 days.
     const existing = await findExistingLeadRow({
       phone10,
       email: normalized.email,
     });
     if (existing?.rowNumber) {
       return NextResponse.json(
-        { success: false, message: "You have already submitted form." },
+        { success: false, message: "You have already submitted form this week. Please try again after 7 days." },
         { status: 409 }
       );
     }
