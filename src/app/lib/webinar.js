@@ -16,7 +16,7 @@ export function getNextWebinarDate() {
 
   let dayDiff = (SUNDAY - istWeekday + 7) % 7;
 
-  // Sunday registrations and Saturday submissions after 5 PM go to next week.
+  // Sunday registrations and Saturday submissions at/after 5 PM go to next week.
   if (dayDiff === 0) dayDiff = 7;
   if (isSaturdayCutoffReached) dayDiff += 7;
 
