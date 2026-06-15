@@ -434,7 +434,10 @@ export default function CourseFormPage() {
                   <span className="absolute inset-0 h-full w-full -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-[shimmer_1.5s_infinite]" />
                   <span className="relative z-10">Enroll Now</span>
                   {loading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Submitting...
+                    </>
                   ) : (
                     <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                   )}
