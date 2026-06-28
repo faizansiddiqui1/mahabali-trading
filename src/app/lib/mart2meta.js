@@ -305,6 +305,7 @@ export async function sendDayLinkReminder({
     webinarDay,
     webinarTime,
     webinarLink = WEBINAR_LINK,
+    communityUrl = process.env.MART2META_TEMPLATE_CONFIRM_COMMUNITY_URL || process.env.WHATSAPP_COMMUNITY_URL || "",
     templateMediaType = process.env.MART2META_TEMPLATE_DAY_LINK_MEDIA_TYPE || process.env.MART2META_TEMPLATE_MORNING_MEDIA_TYPE || "simple",
     mediaUrl,
 }) {
@@ -320,7 +321,7 @@ export async function sendDayLinkReminder({
             mediaUrl ||
             process.env.MART2META_TEMPLATE_DAY_LINK_MEDIA_URL ||
             process.env.MART2META_TEMPLATE_MORNING_MEDIA_URL,
-        parameters: [name, webinarDate, webinarDay, webinarTime, webinarLink],
+        parameters: [name, webinarDate, webinarDay, webinarTime, webinarLink, communityUrl],
     });
 }
 
